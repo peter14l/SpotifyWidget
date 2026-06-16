@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SpotifyWidget (Unpackaged)": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    },
+    "SpotifyWidget (Packaged)": {
+      "commandName": "MsixPackage",
+      "nativeDebugging": false
+    }
+  }
+}

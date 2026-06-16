@@ -1,0 +1,129 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  CONFIGURATION: Release
+  PLATFORM: x64
+
+jobs:
+  build:
+    runs-on: windows-latest
+    name: Build & Test
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore SpotifyWidget.sln
+
+    - name: Build
+      run: |
+        msbuild SpotifyWidget.sln /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }} /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: SpotifyWidget-${{ env.PLATFORM }}-${{ env.CONFIGURATION }}
+        path: |
+          src/SpotifyWidget/bin/${{ env.PLATFORM }}/${{ env.CONFIGURATION }}/
+          !src/SpotifyWidget/bin/${{ env.PLATFORM }}/${{ env.CONFIGURATION }}/*.pdb
+        retention-days: 7
+
+  build-arm64:
+    runs-on: windows-latest
+    name: Build ARM64
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore SpotifyWidget.sln
+
+    - name: Build ARM64
+      run: |
+        msbuild SpotifyWidget.sln /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=ARM64 /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: SpotifyWidget-ARM64-${{ env.CONFIGURATION }}
+        path: |
+          src/SpotifyWidget/bin/ARM64/${{ env.CONFIGURATION }}/
+          !src/SpotifyWidget/bin/ARM64/${{ env.CONFIGURATION }}/*.pdb
+        retention-days: 7
+
+  release:
+    runs-on: windows-latest
+    name: Create Release
+    needs: [build, build-arm64]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download x64 Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: SpotifyWidget-x64-Release
+        path: artifacts/x64
+
+    - name: Download ARM64 Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: SpotifyWidget-ARM64-Release
+        path: artifacts/arm64
+
+    - name: Zip Artifacts
+      run: |
+        Compress-Archive -Path artifacts/x64/* -DestinationPath SpotifyWidget-x64.zip
+        Compress-Archive -Path artifacts/arm64/* -DestinationPath SpotifyWidget-arm64.zip
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          SpotifyWidget-x64.zip
+          SpotifyWidget-arm64.zip
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
