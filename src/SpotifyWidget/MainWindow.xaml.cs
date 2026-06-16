@@ -13,6 +13,7 @@ public sealed partial class MainWindow : Window
 {
     private AppWindow _appWindow = null!;
     private readonly IThemeService _themeService;
+    private MicaController? _micaController;
 
     public MainWindow()
     {
@@ -71,17 +72,10 @@ public sealed partial class MainWindow : Window
     {
         if (MicaController.IsSupported())
         {
-            var micaController = new MicaController();
-            micaController.Kind = MicaKind.Base;
+            _micaController = new MicaController();
+            _micaController.Kind = MicaKind.Base;
 
-            var backdropConfiguration = new SystemBackdropConfiguration();
-            backdropConfiguration.IsInputActive = true;
-            backdropConfiguration.TintColor = _themeService.GetTintColor();
-            backdropConfiguration.TintOpacity = 0.8;
-            backdropConfiguration.LuminosityOpacity = 0.4;
-
-            micaController.AddSystemBackdropTarget(this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
-            micaController.SetSystemBackdropConfiguration(backdropConfiguration);
+            _micaController.AddSystemBackdropTarget(this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
 
             return true;
         }

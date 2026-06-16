@@ -1,6 +1,4 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using SpotifyWidget.Services;
 
 namespace SpotifyWidget;
@@ -24,10 +22,16 @@ public partial class App : Application
     private static void ConfigureServices()
     {
         var services = new ServiceCollection();
-        services.AddSingleton<WidgetWindowManager>();
-        services.AddSingleton<ISpotifyService, SpotifyService>();
-        services.AddSingleton<IThemeService, ThemeService>();
-        services.AddSingleton<ISettingsService, SettingsService>();
+        var settingsService = new SettingsService();
+        var themeService = new ThemeService();
+        var widgetManager = new WidgetWindowManager();
+        var spotifyService = new SpotifyService(settingsService);
+
+        services.AddSingleton(settingsService);
+        services.AddSingleton(themeService);
+        services.AddSingleton(widgetManager);
+        services.AddSingleton<ISpotifyService>(spotifyService);
+
         _serviceProvider = services.BuildServiceProvider();
     }
 
