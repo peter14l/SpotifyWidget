@@ -83,17 +83,17 @@
             Spacing="16">
             <Button
                 x:Name="PreviousButton"
-                Content="&#xE892"
+                Content="&#xE892;"
                 Style="{StaticResource SymbolButtonStyle}"
                 Click="PreviousButton_Click" />
             <Button
                 x:Name="PlayPauseButton"
-                Content="&#xE768"
+                Content="&#xE768;"
                 Style="{StaticResource AccentButtonStyle}"
                 Click="PlayPauseButton_Click" />
             <Button
                 x:Name="NextButton"
-                Content="&#xE893"
+                Content="&#xE893;"
                 Style="{StaticResource SymbolButtonStyle}"
                 Click="NextButton_Click" />
         </StackPanel>

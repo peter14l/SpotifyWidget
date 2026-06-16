@@ -4,11 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SpotifyWidget"
     xmlns:controls="using:SpotifyWidget.Controls"
-    Title="Spotify Widget"
-    MinWidth="320"
-    MinHeight="200"
-    MaxWidth="480"
-    MaxHeight="400">
+    Title="Spotify Widget">
 
     <Grid x:Name="RootGrid" Background="Transparent" Padding="16">
         <Grid.RowDefinitions>
