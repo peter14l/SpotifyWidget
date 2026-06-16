@@ -1,8 +1,10 @@
 using Microsoft.UI;
+using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using SpotifyWidget.Services;
+using Windows.Foundation;
 using WinRT.Interop;
 
 namespace SpotifyWidget;
@@ -56,7 +58,7 @@ public sealed partial class MainWindow : Window
 
         if (args.DidPositionChange)
         {
-            _themeService.SaveWindowPosition(sender.Position);
+            _themeService.SaveWindowPosition(new Point(sender.Position.X, sender.Position.Y));
         }
     }
 

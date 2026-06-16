@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using SpotifyWidget.Models;
 
 namespace SpotifyWidget.Services;
 
@@ -27,18 +28,16 @@ public class ThemeService : IThemeService
 
     public Windows.Foundation.Point GetTintColor()
     {
-        return new Windows.Foundation.Point(30, 30, 30);
+        return new Windows.Foundation.Point(30, 30);
     }
 
     public void SaveWindowPosition(Windows.Foundation.Point position)
     {
-        // Persist to settings
         var settings = new WidgetSettings
         {
             WindowX = position.X,
             WindowY = position.Y
         };
-        // Save to file
     }
 
     public Windows.Foundation.Point LoadWindowPosition()

@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Windowing;
+using System.Collections.Generic;
 using WinRT.Interop;
 
 namespace SpotifyWidget.Services;
@@ -15,30 +16,30 @@ public class WidgetWindowManager
     }
 }
 
-public static class ServiceCollection
+public class ServiceCollection
 {
-    private static readonly Dictionary<Type, object> _services = new();
+    private readonly Dictionary<Type, object> _services = new();
 
-    public static void AddSingleton<TInterface, TImplementation>()
+    public void AddSingleton<TInterface, TImplementation>()
         where TInterface : class
         where TImplementation : class, TInterface, new()
     {
         _services[typeof(TInterface)] = new TImplementation();
     }
 
-    public static void AddSingleton<TInterface>(TInterface instance)
+    public void AddSingleton<TInterface>(TInterface instance)
         where TInterface : class
     {
         _services[typeof(TInterface)] = instance;
     }
 
-    public static T? GetService<T>() where T : class
+    public T? GetService<T>() where T : class
     {
         _services.TryGetValue(typeof(T), out var service);
         return service as T;
     }
 
-    public static IServiceProvider BuildServiceProvider()
+    public IServiceProvider BuildServiceProvider()
     {
         return new ServiceProvider(_services);
     }
