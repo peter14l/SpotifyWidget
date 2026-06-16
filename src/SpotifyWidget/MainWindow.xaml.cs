@@ -92,4 +92,14 @@ public sealed partial class MainWindow : Window
             rootElement.RequestedTheme = theme == ElementTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
         }
     }
+
+    private void SettingsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        // TODO: Open settings dialog
+    }
+
+    private void CloseButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        this.Close();
+    }
 }
