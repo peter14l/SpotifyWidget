@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using SpotifyWidget.Services;
 using Windows.Foundation;
+using WinRT;
 using WinRT.Interop;
 
 namespace SpotifyWidget;
