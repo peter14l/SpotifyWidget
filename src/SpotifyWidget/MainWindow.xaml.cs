@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using SpotifyWidget.Services;
 using SpotifyWidget.ViewModels;
 using Windows.Foundation;
+using Windows.UI;
 using WinRT;
 using WinRT.Interop;
 
@@ -34,6 +35,24 @@ public sealed partial class MainWindow : Window
         InitializeMicaBackdrop();
         ApplyTheme();
         RestoreWindowPosition();
+
+        viewModel.PropertyChanged += OnViewModelPropertyChanged;
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SpotifyPlayerViewModel.AccentColor))
+        {
+            UpdateMicaTint(ViewModel.AccentColor);
+        }
+    }
+
+    private void UpdateMicaTint(Color accent)
+    {
+        if (_micaController is null || accent.A == 0)
+            return;
+
+        _micaController.TintColor = accent;
     }
 
     private void InitializeWindow()

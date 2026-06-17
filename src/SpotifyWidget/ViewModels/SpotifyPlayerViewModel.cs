@@ -4,6 +4,8 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 using SpotifyWidget.Models;
 using SpotifyWidget.Services;
+using Windows.UI;
+using System.IO;
 
 namespace SpotifyWidget.ViewModels;
 
@@ -43,6 +45,11 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private bool _isAuthenticated;
 
+    [ObservableProperty]
+    private Color _accentColor = Color.FromArgb(0, 0, 0, 0);
+
+    private string? _lastAlbumArtUri;
+
     public SpotifyPlayerViewModel(ISpotifyService spotifyService, ISettingsService settingsService)
     {
         _spotifyService = spotifyService;
@@ -55,6 +62,7 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
 
     public async Task InitializeAsync()
     {
+        await _settingsService.LoadSettingsAsync();
         _spotifyService.Initialize();
         var isAuthenticated = await _spotifyService.IsAuthenticatedAsync();
         IsAuthenticated = isAuthenticated;
@@ -77,10 +85,19 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
 
     private void OnAuthenticationStateChanged(object? sender, bool authenticated)
     {
-        _dispatcherQueue.TryEnqueue(() =>
+        _dispatcherQueue.TryEnqueue(async () =>
         {
             IsAuthenticated = authenticated;
-            StatusText = authenticated ? "Connected" : "Not authenticated";
+            if (authenticated)
+            {
+                StatusText = "Connected";
+                await RefreshStateAsync();
+                _spotifyService.StartPolling(_settingsService.GetSettings().RefreshIntervalMs);
+            }
+            else
+            {
+                StatusText = "Not authenticated";
+            }
         });
     }
 
@@ -110,9 +127,21 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
         IsPlaying = state.IsPlaying;
         PlayPauseSymbol = state.IsPlaying ? "\uE769" : "\uE768";
 
-        if (state.Track.AlbumArtUri != null)
+        var albumArtUri = state.Track.AlbumArtUri;
+        if (albumArtUri != null)
         {
-            AlbumArt = new BitmapImage(state.Track.AlbumArtUri);
+            var uriStr = albumArtUri.ToString();
+            if (!string.Equals(uriStr, _lastAlbumArtUri))
+            {
+                _lastAlbumArtUri = uriStr;
+                AlbumArt = new BitmapImage(albumArtUri);
+                _ = ExtractColorsAsync(uriStr);
+            }
+        }
+        else
+        {
+            _lastAlbumArtUri = null;
+            AlbumArt = null;
         }
 
         if (state.Track.DurationMs > 0)
@@ -129,6 +158,57 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
         var current = TimeSpan.FromMilliseconds(currentMs);
         var total = TimeSpan.FromMilliseconds(totalMs);
         TimeDisplay = $"{current:mm\\:ss} / {total:mm\\:ss}";
+    }
+
+    private async Task ExtractColorsAsync(string imageUri)
+    {
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(3);
+            var bytes = await httpClient.GetByteArrayAsync(imageUri);
+
+            using var stream = new MemoryStream(bytes).AsRandomAccessStream();
+            var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
+            var pixelData = await decoder.GetPixelDataAsync(
+                Windows.Graphics.Imaging.BitmapPixelFormat.Rgba8,
+                Windows.Graphics.Imaging.BitmapAlphaMode.Ignore,
+                new Windows.Graphics.Imaging.BitmapTransform(),
+                Windows.Graphics.Imaging.ExifOrientationMode.IgnoreExifOrientation,
+                Windows.Graphics.Imaging.ColorManagementMode.DoNotColorManage);
+
+            var pixels = pixelData.DetachPixelData();
+            var dominant = GetDominantColor(pixels, (int)decoder.PixelWidth, (int)decoder.PixelHeight);
+
+            _dispatcherQueue.TryEnqueue(() => AccentColor = dominant);
+        }
+        catch
+        {
+        }
+    }
+
+    private static Color GetDominantColor(byte[] pixels, int width, int height)
+    {
+        var step = Math.Max(1, width * height / 200);
+        long totalR = 0, totalG = 0, totalB = 0;
+        var count = 0;
+
+        for (var i = 0; i < pixels.Length - 3; i += 4 * step)
+        {
+            totalB += pixels[i];
+            totalG += pixels[i + 1];
+            totalR += pixels[i + 2];
+            count++;
+        }
+
+        if (count == 0)
+            return Color.FromArgb(0, 0, 0, 0);
+
+        return Color.FromArgb(
+            100,
+            (byte)(totalR / count),
+            (byte)(totalG / count),
+            (byte)(totalB / count));
     }
 
     [RelayCommand]

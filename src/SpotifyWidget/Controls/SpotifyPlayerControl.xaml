@@ -50,12 +50,24 @@
             Grid.Row="1"
             Visibility="Collapsed">
 
-            <Grid Height="4" Margin="0,0,0,4">
+            <Grid
+                x:Name="ProgressTrack"
+                Height="20"
+                Margin="0,-8,0,-8"
+                PointerPressed="OnProgressPointerPressed"
+                PointerMoved="OnProgressPointerMoved"
+                PointerReleased="OnProgressPointerReleased"
+                PointerCanceled="OnProgressPointerCanceled"
+                PointerExited="OnProgressPointerExited">
                 <Border
+                    VerticalAlignment="Center"
+                    Height="4"
                     CornerRadius="2"
                     Background="#33000000" />
                 <Border
                     x:Name="ProgressFill"
+                    VerticalAlignment="Center"
+                    Height="4"
                     CornerRadius="2"
                     HorizontalAlignment="Left"
                     Background="#0078D4" />
