@@ -40,6 +40,9 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private string _statusText = "Not authenticated";
 
+    [ObservableProperty]
+    private bool _isAuthenticated;
+
     public SpotifyPlayerViewModel(ISpotifyService spotifyService, ISettingsService settingsService)
     {
         _spotifyService = spotifyService;
@@ -52,7 +55,9 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
 
     public async Task InitializeAsync()
     {
+        _spotifyService.Initialize();
         var isAuthenticated = await _spotifyService.IsAuthenticatedAsync();
+        IsAuthenticated = isAuthenticated;
         if (isAuthenticated)
         {
             await RefreshStateAsync();
@@ -74,6 +79,7 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
+            IsAuthenticated = authenticated;
             StatusText = authenticated ? "Connected" : "Not authenticated";
         });
     }

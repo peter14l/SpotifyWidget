@@ -19,7 +19,7 @@ public class SpotifyService : ISpotifyService, IDisposable
     private DateTime _tokenExpiry = DateTime.MinValue;
     private string _codeVerifier = string.Empty;
 
-    private const string ClientId = "YOUR_SPOTIFY_CLIENT_ID";
+    private const string DefaultClientId = "YOUR_SPOTIFY_CLIENT_ID";
     private const string RedirectUri = "http://localhost:52763/callback";
     private const string Scopes = "user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private";
     private const string TokenUrl = "https://accounts.spotify.com/api/token";
@@ -33,6 +33,12 @@ public class SpotifyService : ISpotifyService, IDisposable
     {
         _httpClient = httpClient ?? new HttpClient();
         _settingsService = settingsService;
+    }
+
+    private string GetClientId()
+    {
+        var settings = _settingsService.GetSettings();
+        return !string.IsNullOrEmpty(settings.ClientId) ? settings.ClientId : DefaultClientId;
     }
 
     public void Initialize()
@@ -65,7 +71,7 @@ public class SpotifyService : ISpotifyService, IDisposable
 
         var queryParams = new Dictionary<string, string>
         {
-            ["client_id"] = ClientId,
+            ["client_id"] = GetClientId(),
             ["response_type"] = "code",
             ["redirect_uri"] = RedirectUri,
             ["code_challenge_method"] = "S256",
@@ -87,7 +93,7 @@ public class SpotifyService : ISpotifyService, IDisposable
             using var request = new HttpRequestMessage(HttpMethod.Post, TokenUrl);
             var content = new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>("client_id", ClientId),
+                new KeyValuePair<string, string>("client_id", GetClientId()),
                 new KeyValuePair<string, string>("grant_type", "authorization_code"),
                 new KeyValuePair<string, string>("code", authorizationCode),
                 new KeyValuePair<string, string>("redirect_uri", RedirectUri),
@@ -179,7 +185,7 @@ public class SpotifyService : ISpotifyService, IDisposable
             using var request = new HttpRequestMessage(HttpMethod.Post, TokenUrl);
             var content = new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>("client_id", ClientId),
+                new KeyValuePair<string, string>("client_id", GetClientId()),
                 new KeyValuePair<string, string>("grant_type", "refresh_token"),
                 new KeyValuePair<string, string>("refresh_token", _refreshToken)
             });

@@ -7,9 +7,7 @@
     <Grid Padding="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Margin="0,0,0,12">
@@ -47,42 +45,66 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="1" Height="4" Margin="0,0,0,4">
-            <Border
-                CornerRadius="2"
-                Background="#33000000" />
-            <Border
-                x:Name="ProgressFill"
-                CornerRadius="2"
-                HorizontalAlignment="Left"
-                Background="#0078D4" />
-        </Grid>
+        <StackPanel
+            x:Name="PlayerContent"
+            Grid.Row="1"
+            Visibility="Collapsed">
 
-        <TextBlock
-            Grid.Row="2"
-            Text="{x:Bind ViewModel.TimeDisplay, Mode=OneWay}"
-            Style="{StaticResource CaptionTextBlockStyle}"
-            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-            HorizontalAlignment="Center"
-            Margin="0,0,0,8" />
+            <Grid Height="4" Margin="0,0,0,4">
+                <Border
+                    CornerRadius="2"
+                    Background="#33000000" />
+                <Border
+                    x:Name="ProgressFill"
+                    CornerRadius="2"
+                    HorizontalAlignment="Left"
+                    Background="#0078D4" />
+            </Grid>
+
+            <TextBlock
+                Text="{x:Bind ViewModel.TimeDisplay, Mode=OneWay}"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                HorizontalAlignment="Center"
+                Margin="0,0,0,8" />
+
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Spacing="16">
+                <Button
+                    Content="&#xE892;"
+                    Style="{StaticResource SymbolButtonStyle}"
+                    Command="{x:Bind ViewModel.PreviousTrackCommand}" />
+                <Button
+                    Content="{x:Bind ViewModel.PlayPauseSymbol, Mode=OneWay}"
+                    Style="{StaticResource SymbolAccentButtonStyle}"
+                    Command="{x:Bind ViewModel.PlayPauseCommand}" />
+                <Button
+                    Content="&#xE893;"
+                    Style="{StaticResource SymbolButtonStyle}"
+                    Command="{x:Bind ViewModel.NextTrackCommand}" />
+            </StackPanel>
+        </StackPanel>
 
         <StackPanel
-            Grid.Row="3"
-            Orientation="Horizontal"
+            x:Name="LoginContent"
+            Grid.Row="1"
             HorizontalAlignment="Center"
-            Spacing="16">
+            VerticalAlignment="Center"
+            Spacing="12"
+            Visibility="Visible">
+            <TextBlock
+                Text="{x:Bind ViewModel.StatusText, Mode=OneWay}"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                HorizontalAlignment="Center" />
             <Button
-                Content="&#xE892;"
-                Style="{StaticResource SymbolButtonStyle}"
-                Command="{x:Bind ViewModel.PreviousTrackCommand}" />
-            <Button
-                Content="{x:Bind ViewModel.PlayPauseSymbol, Mode=OneWay}"
-                Style="{StaticResource SymbolAccentButtonStyle}"
-                Command="{x:Bind ViewModel.PlayPauseCommand}" />
-            <Button
-                Content="&#xE893;"
-                Style="{StaticResource SymbolButtonStyle}"
-                Command="{x:Bind ViewModel.NextTrackCommand}" />
+                Content="Log in with Spotify"
+                Style="{StaticResource AccentButtonStyle}"
+                Command="{x:Bind ViewModel.LoginCommand}"
+                MinWidth="160"
+                HorizontalAlignment="Center" />
         </StackPanel>
     </Grid>
 

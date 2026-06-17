@@ -4,6 +4,7 @@ namespace SpotifyWidget.Services;
 
 public interface ISpotifyService
 {
+    void Initialize();
     Task<bool> IsAuthenticatedAsync();
     Task<SpotifyPlaybackState?> GetPlaybackStateAsync();
     Task<bool> PlayAsync();

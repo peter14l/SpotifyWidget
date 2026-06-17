@@ -33,6 +33,7 @@ public sealed partial class SpotifyPlayerControl : UserControl
             ViewModel = viewModel;
             viewModel.PropertyChanged += OnViewModelPropertyChanged;
             UpdateProgressBarWidth();
+            UpdateAuthVisibility();
             Bindings.Update();
             _ = viewModel.InitializeAsync();
         }
@@ -45,6 +46,20 @@ public sealed partial class SpotifyPlayerControl : UserControl
         {
             UpdateProgressBarWidth();
         }
+        else if (e.PropertyName == nameof(SpotifyPlayerViewModel.IsAuthenticated))
+        {
+            UpdateAuthVisibility();
+        }
+    }
+
+    private void UpdateAuthVisibility()
+    {
+        if (ViewModel is null)
+            return;
+
+        var isAuth = ViewModel.IsAuthenticated;
+        PlayerContent.Visibility = isAuth ? Visibility.Visible : Visibility.Collapsed;
+        LoginContent.Visibility = isAuth ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void UpdateProgressBarWidth()
