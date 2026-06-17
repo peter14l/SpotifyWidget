@@ -93,31 +93,38 @@ public sealed partial class MainWindow : Window
 
     private bool TrySetMicaBackdrop()
     {
-        if (MicaController.IsSupported())
+        try
         {
-            _micaController = new MicaController();
-            _micaController.Kind = MicaKind.Base;
-
-            _backdropConfiguration = new SystemBackdropConfiguration
+            if (MicaController.IsSupported())
             {
-                IsInputActive = true,
-                Theme = _themeService.GetCurrentTheme() switch
+                _micaController = new MicaController();
+                _micaController.Kind = MicaKind.Base;
+
+                _backdropConfiguration = new SystemBackdropConfiguration
                 {
-                    ElementTheme.Dark => SystemBackdropTheme.Dark,
-                    ElementTheme.Light => SystemBackdropTheme.Light,
-                    _ => SystemBackdropTheme.Default
-                }
-            };
+                    IsInputActive = true,
+                    Theme = _themeService.GetCurrentTheme() switch
+                    {
+                        ElementTheme.Dark => SystemBackdropTheme.Dark,
+                        ElementTheme.Light => SystemBackdropTheme.Light,
+                        _ => SystemBackdropTheme.Default
+                    }
+                };
 
-            var tint = _themeService.GetTintColor();
-            _micaController.TintColor = tint;
-            _micaController.TintOpacity = 0.4f;
-            _micaController.LuminosityOpacity = 0.8f;
+                var tint = _themeService.GetTintColor();
+                _micaController.TintColor = tint;
+                _micaController.TintOpacity = 0.4f;
+                _micaController.LuminosityOpacity = 0.8f;
 
-            _micaController.SetSystemBackdropConfiguration(_backdropConfiguration);
-            _micaController.AddSystemBackdropTarget(this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
+                _micaController.SetSystemBackdropConfiguration(_backdropConfiguration);
+                _micaController.AddSystemBackdropTarget(this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
 
-            return true;
+                return true;
+            }
+        }
+        catch
+        {
+            System.Diagnostics.Debug.WriteLine("Mica backdrop not supported, continuing without it");
         }
 
         return false;

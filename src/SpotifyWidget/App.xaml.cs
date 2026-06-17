@@ -40,11 +40,18 @@ public partial class App : Application
 
     private async void InitializeServices()
     {
-        var settingsService = Services.GetRequiredService<ISettingsService>();
-        await settingsService.LoadSettingsAsync();
+        try
+        {
+            var settingsService = Services.GetRequiredService<ISettingsService>();
+            await settingsService.LoadSettingsAsync();
 
-        var spotifyService = Services.GetRequiredService<ISpotifyService>();
-        await spotifyService.IsAuthenticatedAsync();
+            var spotifyService = Services.GetRequiredService<ISpotifyService>();
+            await spotifyService.IsAuthenticatedAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Service initialization failed: {ex.Message}");
+        }
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
