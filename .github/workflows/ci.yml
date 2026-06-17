@@ -38,7 +38,7 @@ jobs:
       run: msbuild src/SpotifyWidget/SpotifyWidget.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }} /p:RuntimeIdentifier=win-${{ env.PLATFORM }}
 
     - name: Build Test Project
-      run: msbuild tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }} /p:RuntimeIdentifier=win-${{ env.PLATFORM }}
+      run: msbuild tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }}
 
     - name: Run Tests
       run: |
