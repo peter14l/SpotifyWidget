@@ -17,9 +17,8 @@
             </Grid.ColumnDefinitions>
 
             <Border
+                x:Name="AlbumArtBorder"
                 Grid.Column="0"
-                Width="80"
-                Height="80"
                 CornerRadius="8"
                 Margin="0,0,12,0">
                 <Image
@@ -31,11 +30,13 @@
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                 <TextBlock
+                    x:Name="TrackNameText"
                     Text="{x:Bind ViewModel.TrackName, Mode=OneWay}"
                     Style="{StaticResource BodyStrongTextBlockStyle}"
                     TextWrapping="NoWrap"
                     MaxLines="2" />
                 <TextBlock
+                    x:Name="ArtistNameText"
                     Text="{x:Bind ViewModel.ArtistName, Mode=OneWay}"
                     Style="{StaticResource CaptionTextBlockStyle}"
                     Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
@@ -81,18 +82,22 @@
                 Margin="0,0,0,8" />
 
             <StackPanel
+                x:Name="ControlsPanel"
                 Orientation="Horizontal"
                 HorizontalAlignment="Center"
                 Spacing="16">
                 <Button
+                    x:Name="PrevButton"
                     Content="&#xE892;"
                     Style="{StaticResource SymbolButtonStyle}"
                     Command="{x:Bind ViewModel.PreviousTrackCommand}" />
                 <Button
+                    x:Name="PlayPauseButton"
                     Content="{x:Bind ViewModel.PlayPauseSymbol, Mode=OneWay}"
                     Style="{StaticResource SymbolAccentButtonStyle}"
                     Command="{x:Bind ViewModel.PlayPauseCommand}" />
                 <Button
+                    x:Name="NextButton"
                     Content="&#xE893;"
                     Style="{StaticResource SymbolButtonStyle}"
                     Command="{x:Bind ViewModel.NextTrackCommand}" />

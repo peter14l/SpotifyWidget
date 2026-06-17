@@ -49,6 +49,7 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
     private Color _accentColor = Color.FromArgb(0, 0, 0, 0);
 
     private string? _lastAlbumArtUri;
+    private bool _initialized;
 
     public SpotifyPlayerViewModel(ISpotifyService spotifyService, ISettingsService settingsService)
     {
@@ -62,6 +63,10 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
 
     public async Task InitializeAsync()
     {
+        if (_initialized)
+            return;
+        _initialized = true;
+
         await _settingsService.LoadSettingsAsync();
         _spotifyService.Initialize();
         var isAuthenticated = await _spotifyService.IsAuthenticatedAsync();

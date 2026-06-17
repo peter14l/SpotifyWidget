@@ -19,11 +19,13 @@ public sealed partial class SpotifyPlayerControl : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        UpdateResponsiveLayout();
         UpdateProgressBarWidth();
     }
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
     {
+        UpdateResponsiveLayout();
         UpdateProgressBarWidth();
     }
 
@@ -64,6 +66,38 @@ public sealed partial class SpotifyPlayerControl : UserControl
     }
 
     private bool _isSeeking;
+
+    private double _artSize = 80;
+
+    private void UpdateResponsiveLayout()
+    {
+        var availableWidth = ActualWidth - 16;
+        _artSize = Math.Clamp(availableWidth * 0.28, 60.0, 200.0);
+        AlbumArtBorder.Width = _artSize;
+        AlbumArtBorder.Height = _artSize;
+
+        var scale = _artSize / 80.0;
+        TrackNameText.FontSize = Math.Clamp(14.0 * scale, 12.0, 24.0);
+        ArtistNameText.FontSize = Math.Clamp(12.0 * scale, 10.0, 18.0);
+        ArtistNameText.Margin = new Thickness(0, Math.Clamp(4 * scale, 2, 8), 0, 0);
+
+        var btnSize = Math.Clamp(32 * scale, 28.0, 48.0);
+        PrevButton.Width = btnSize;
+        PrevButton.Height = btnSize;
+        NextButton.Width = btnSize;
+        NextButton.Height = btnSize;
+
+        var playSize = Math.Clamp(48 * scale, 40.0, 72.0);
+        PlayPauseButton.Width = playSize;
+        PlayPauseButton.Height = playSize;
+
+        var btnFont = Math.Clamp(16 * scale, 14.0, 24.0);
+        PrevButton.FontSize = btnFont;
+        NextButton.FontSize = btnFont;
+        PlayPauseButton.FontSize = Math.Clamp(20 * scale, 18.0, 30.0);
+
+        ProgressTrack.Height = Math.Clamp(20 * scale, 16.0, 40.0);
+    }
 
     private void UpdateProgressBarWidth()
     {

@@ -74,8 +74,6 @@ public sealed partial class MainWindow : Window
             presenter.IsResizable = true;
             presenter.PreferredMinimumWidth = 320;
             presenter.PreferredMinimumHeight = 200;
-            presenter.PreferredMaximumWidth = 480;
-            presenter.PreferredMaximumHeight = 400;
         }
 
         _appWindow.Changed += OnWindowChanged;
