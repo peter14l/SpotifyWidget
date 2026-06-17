@@ -20,7 +20,7 @@ public class SpotifyService : ISpotifyService, IDisposable
     private string _codeVerifier = string.Empty;
 
     private const string DefaultClientId = "YOUR_SPOTIFY_CLIENT_ID";
-    private const string RedirectUri = "http://localhost:52763/callback";
+    private const string RedirectUri = "http://127.0.0.1:52763/callback";
     private const string Scopes = "user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private";
     private const string TokenUrl = "https://accounts.spotify.com/api/token";
     private const string AuthUrl = "https://accounts.spotify.com/authorize";
@@ -140,7 +140,7 @@ public class SpotifyService : ISpotifyService, IDisposable
         }
 
         _callbackListener = new HttpListener();
-        _callbackListener.Prefixes.Add("http://localhost:52763/");
+        _callbackListener.Prefixes.Add("http://127.0.0.1:52763/");
         _callbackListener.Start();
 
         _ = Task.Run(async () =>
