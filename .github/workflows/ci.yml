@@ -38,9 +38,13 @@ jobs:
       run: |
         msbuild src/SpotifyWidget/SpotifyWidget.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }} /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
 
-    - name: Build & Run Tests
+    - name: Build Test Project
       run: |
-        dotnet test tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj --configuration ${{ env.CONFIGURATION }} --logger trx --results-directory TestResults
+        msbuild tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }} /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
+
+    - name: Run Tests
+      run: |
+        dotnet test tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj --configuration ${{ env.CONFIGURATION }} --no-build --logger trx --results-directory TestResults
 
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
@@ -85,9 +89,13 @@ jobs:
       run: |
         msbuild src/SpotifyWidget/SpotifyWidget.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=ARM64 /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
 
-    - name: Build & Run Tests ARM64
+    - name: Build Test Project ARM64
       run: |
-        dotnet test tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj --configuration ${{ env.CONFIGURATION }} --logger trx --results-directory TestResults
+        msbuild tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=ARM64 /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
+
+    - name: Run Tests ARM64
+      run: |
+        dotnet test tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj --configuration ${{ env.CONFIGURATION }} --no-build --logger trx --results-directory TestResults
 
     - name: Upload Test Results ARM64
       uses: actions/upload-artifact@v4
