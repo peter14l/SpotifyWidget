@@ -34,11 +34,11 @@ jobs:
     - name: Restore
       run: dotnet restore SpotifyWidget.sln
 
-    - name: Build
+    - name: Build Main Project
       run: |
-        msbuild SpotifyWidget.sln /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }} /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
+        msbuild src/SpotifyWidget/SpotifyWidget.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }} /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
 
-    - name: Run Tests
+    - name: Build & Run Tests
       run: |
         dotnet test tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj --configuration ${{ env.CONFIGURATION }} --no-restore --logger trx --results-directory TestResults
 
@@ -81,11 +81,11 @@ jobs:
     - name: Restore
       run: dotnet restore SpotifyWidget.sln
 
-    - name: Build ARM64
+    - name: Build ARM64 Main Project
       run: |
-        msbuild SpotifyWidget.sln /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=ARM64 /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
+        msbuild src/SpotifyWidget/SpotifyWidget.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=ARM64 /p:AppxBundle=Never /p:UapAppxPackageBuildMode=DoNotPackage
 
-    - name: Run Tests ARM64
+    - name: Build & Run Tests ARM64
       run: |
         dotnet test tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj --configuration ${{ env.CONFIGURATION }} --no-restore --logger trx --results-directory TestResults
 
