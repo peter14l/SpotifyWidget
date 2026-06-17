@@ -75,12 +75,14 @@ POST /v1/me/player/previous // Previous track
 
 ### 3. Service Architecture
 
-Dependency injection with `IServiceProvider`:
+Dependency injection with `Microsoft.Extensions.DependencyInjection`:
 
 ```csharp
-services.AddSingleton<ISpotifyService, SpotifyService>();
-services.AddSingleton<IThemeService, ThemeService>();
 services.AddSingleton<ISettingsService, SettingsService>();
+services.AddSingleton<IThemeService, ThemeService>();
+services.AddSingleton<ISpotifyService, SpotifyService>();
+services.AddSingleton<MainWindow>();
+services.AddSingleton<SpotifyPlayerViewModel>();
 ```
 
 ### 4. Theme System

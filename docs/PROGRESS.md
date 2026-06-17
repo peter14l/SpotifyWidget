@@ -13,25 +13,37 @@
 - [x] Player control UI
 - [x] GitHub Actions CI/CD
 - [x] Documentation
+- [x] Spotify OAuth 2.0 PKCE authentication flow
+- [x] Token refresh with secure DPAPI-encrypted storage
+- [x] Real-time playback state polling
+- [x] Playback controls (play/pause/next/prev)
+- [x] Album art loading
+- [x] Progress bar seeking
+- [x] Volume control
+- [x] Device switching (get/transfer)
+- [x] Settings UI (Client ID, theme, opacity, polling interval, always-on-top)
+- [x] MVVM architecture with CommunityToolkit.Mvvm
+- [x] Microsoft.Extensions.DependencyInjection
+- [x] Proper Mica backdrop configuration
+- [x] Window position persistence
+- [x] Unit test project (xUnit + Moq)
+- [x] System theme detection (dark/light)
 
 ### In Progress
 
-- [ ] Spotify OAuth 2.0 authentication
-- [ ] Real-time playback state polling
-- [ ] Playback controls (play/pause/next/prev)
-- [ ] Album art loading
-- [ ] Progress bar seeking
+- (None - all base features complete)
 
 ### Planned
 
-- [ ] Volume control
-- [ ] Device switching
 - [ ] Queue management
-- [ ] Settings UI
+- [ ] Shuffle/repeat toggles
+- [ ] Playlist viewing
 - [ ] System tray integration
 - [ ] Auto-start option
 - [ ] Multiple widget themes
 - [ ] Lyrics display
+- [ ] Keyboard shortcuts
+- [ ] Toast notifications
 
 ---
 

@@ -84,6 +84,12 @@ public class SpotifyDevice
     public string Type { get; set; } = string.Empty;
 }
 
+public class SpotifyDevicesResponse
+{
+    [JsonPropertyName("devices")]
+    public List<SpotifyDevice> Devices { get; set; } = new();
+}
+
 public class SpotifyTokenResponse
 {
     [JsonPropertyName("access_token")]

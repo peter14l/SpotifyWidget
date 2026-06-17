@@ -4,6 +4,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using SpotifyWidget.Services;
+using SpotifyWidget.ViewModels;
 using Windows.Foundation;
 using WinRT;
 using WinRT.Interop;
@@ -12,18 +13,26 @@ namespace SpotifyWidget;
 
 public sealed partial class MainWindow : Window
 {
+    public SpotifyPlayerViewModel ViewModel { get; }
+
     private AppWindow _appWindow = null!;
     private readonly IThemeService _themeService;
+    private readonly ISettingsService _settingsService;
     private MicaController? _micaController;
+    private SystemBackdropConfiguration? _backdropConfiguration;
 
-    public MainWindow()
+    public MainWindow(IThemeService themeService, SpotifyPlayerViewModel viewModel, ISettingsService settingsService)
     {
         this.InitializeComponent();
-        _themeService = App.GetService<IThemeService>()!;
+        ViewModel = viewModel;
+        _themeService = themeService;
+        _settingsService = settingsService;
+        DataContext = viewModel;
 
         InitializeWindow();
         InitializeMicaBackdrop();
         ApplyTheme();
+        RestoreWindowPosition();
     }
 
     private void InitializeWindow()
@@ -38,7 +47,8 @@ public sealed partial class MainWindow : Window
         var presenter = _appWindow.Presenter as OverlappedPresenter;
         if (presenter != null)
         {
-            presenter.IsAlwaysOnTop = true;
+            var settings = _settingsService.GetSettings();
+            presenter.IsAlwaysOnTop = settings.AlwaysOnTop;
             presenter.IsMaximizable = false;
             presenter.IsMinimizable = false;
             presenter.IsResizable = true;
@@ -64,6 +74,15 @@ public sealed partial class MainWindow : Window
         }
     }
 
+    private void RestoreWindowPosition()
+    {
+        var position = _themeService.LoadWindowPosition();
+        if (position.X >= 0 && position.Y >= 0)
+        {
+            _appWindow.Move(new PointInt32((int)position.X, (int)position.Y));
+        }
+    }
+
     private void InitializeMicaBackdrop()
     {
         TrySetMicaBackdrop();
@@ -76,6 +95,23 @@ public sealed partial class MainWindow : Window
             _micaController = new MicaController();
             _micaController.Kind = MicaKind.Base;
 
+            _backdropConfiguration = new SystemBackdropConfiguration
+            {
+                IsInputActive = true,
+                Theme = _themeService.GetCurrentTheme() switch
+                {
+                    ElementTheme.Dark => SystemBackdropTheme.Dark,
+                    ElementTheme.Light => SystemBackdropTheme.Light,
+                    _ => SystemBackdropTheme.Default
+                }
+            };
+
+            var tint = _themeService.GetTintColor();
+            _micaController.TintColor = tint;
+            _micaController.TintOpacity = 0.4f;
+            _micaController.LuminosityOpacity = 0.8f;
+
+            _micaController.SetSystemBackdropConfiguration(_backdropConfiguration);
             _micaController.AddSystemBackdropTarget(this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
 
             return true;
@@ -89,13 +125,14 @@ public sealed partial class MainWindow : Window
         var theme = _themeService.GetCurrentTheme();
         if (Content is FrameworkElement rootElement)
         {
-            rootElement.RequestedTheme = theme == ElementTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
+            rootElement.RequestedTheme = theme;
         }
     }
 
     private void SettingsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
-        // TODO: Open settings dialog
+        var settingsWindow = App.Services.GetRequiredService<Controls.SettingsWindow>();
+        settingsWindow.Activate();
     }
 
     private void CloseButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)

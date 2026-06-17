@@ -1,17 +1,17 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using SpotifyWidget.Services;
+using SpotifyWidget.ViewModels;
 
 namespace SpotifyWidget;
 
 public partial class App : Application
 {
     private Window? _window;
-    private static IServiceProvider? _serviceProvider;
+    private IHost? _host;
 
-    public static T? GetService<T>() where T : class
-    {
-        return _serviceProvider?.GetService(typeof(T)) as T;
-    }
+    public static IServiceProvider Services { get; private set; } = null!;
 
     public App()
     {
@@ -19,27 +19,43 @@ public partial class App : Application
         ConfigureServices();
     }
 
-    private static void ConfigureServices()
+    private void ConfigureServices()
     {
-        var services = new ServiceCollection();
-        var settingsService = new SettingsService();
-        var themeService = new ThemeService();
-        var widgetManager = new WidgetWindowManager();
-        var spotifyService = new SpotifyService(settingsService);
+        _host = Host.CreateDefaultBuilder()
+            .ConfigureServices((context, services) =>
+            {
+                services.AddSingleton<ISettingsService, SettingsService>();
+                services.AddSingleton<IThemeService, ThemeService>();
+                services.AddSingleton<ISpotifyService, SpotifyService>();
+                services.AddSingleton<MainWindow>();
+                services.AddTransient<Controls.SettingsWindow>();
+                services.AddSingleton<SpotifyPlayerViewModel>();
+            })
+            .Build();
 
-        services.AddSingleton(settingsService);
-        services.AddSingleton(themeService);
-        services.AddSingleton(widgetManager);
-        services.AddSingleton<ISpotifyService>(spotifyService);
+        Services = _host.Services;
 
-        _serviceProvider = services.BuildServiceProvider();
+        InitializeServices();
+    }
+
+    private async void InitializeServices()
+    {
+        var settingsService = Services.GetRequiredService<ISettingsService>();
+        await settingsService.LoadSettingsAsync();
+
+        var spotifyService = Services.GetRequiredService<ISpotifyService>();
+        await spotifyService.IsAuthenticatedAsync();
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        _window = new MainWindow();
+        _window = Services.GetRequiredService<MainWindow>();
         _window.Activate();
     }
 
-    public static Window? MainWindow => GetService<WidgetWindowManager>()?.MainWindow;
+    protected override void OnExit(object sender, object args)
+    {
+        _host?.Dispose();
+        base.OnExit(sender, args);
+    }
 }

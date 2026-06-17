@@ -1,5 +1,7 @@
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
-using SpotifyWidget.Models;
+using Windows.Foundation;
+using Windows.UI.ViewManagement;
 
 namespace SpotifyWidget.Services;
 
@@ -7,41 +9,62 @@ public interface IThemeService
 {
     ElementTheme GetCurrentTheme();
     void SetTheme(ElementTheme theme);
-    Windows.Foundation.Point GetTintColor();
-    void SaveWindowPosition(Windows.Foundation.Point position);
-    Windows.Foundation.Point LoadWindowPosition();
+    Color GetTintColor();
+    void SaveWindowPosition(Point position);
+    Point LoadWindowPosition();
 }
 
 public class ThemeService : IThemeService
 {
-    private ElementTheme _currentTheme = ElementTheme.Dark;
+    private readonly ISettingsService _settingsService;
+    private ElementTheme _currentTheme = ElementTheme.Default;
+
+    public ThemeService(ISettingsService settingsService)
+    {
+        _settingsService = settingsService;
+    }
 
     public ElementTheme GetCurrentTheme()
     {
-        return _currentTheme;
+        if (_currentTheme != ElementTheme.Default)
+            return _currentTheme;
+
+        var settings = new UISettings();
+        var backgroundColor = settings.GetColorValue(UIColorType.Background);
+        var isDark = backgroundColor.R < 128 && backgroundColor.G < 128 && backgroundColor.B < 128;
+        return isDark ? ElementTheme.Dark : ElementTheme.Light;
     }
 
     public void SetTheme(ElementTheme theme)
     {
         _currentTheme = theme;
-    }
-
-    public Windows.Foundation.Point GetTintColor()
-    {
-        return new Windows.Foundation.Point(30, 30);
-    }
-
-    public void SaveWindowPosition(Windows.Foundation.Point position)
-    {
-        var settings = new WidgetSettings
+        var settings = _settingsService.GetSettings();
+        settings.Theme = theme switch
         {
-            WindowX = position.X,
-            WindowY = position.Y
+            ElementTheme.Dark => "Dark",
+            ElementTheme.Light => "Light",
+            _ => "System"
         };
+        _ = _settingsService.SaveSettingsAsync(settings);
     }
 
-    public Windows.Foundation.Point LoadWindowPosition()
+    public Color GetTintColor()
     {
-        return new Windows.Foundation.Point(100, 100);
+        var isDark = GetCurrentTheme() == ElementTheme.Dark;
+        return isDark ? Color.FromArgb(30, 32, 32, 32) : Color.FromArgb(230, 249, 249, 249);
+    }
+
+    public void SaveWindowPosition(Point position)
+    {
+        var settings = _settingsService.GetSettings();
+        settings.WindowX = position.X;
+        settings.WindowY = position.Y;
+        _ = _settingsService.SaveSettingsAsync(settings);
+    }
+
+    public Point LoadWindowPosition()
+    {
+        var settings = _settingsService.GetSettings();
+        return new Point(settings.WindowX, settings.WindowY);
     }
 }

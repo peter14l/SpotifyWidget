@@ -13,4 +13,6 @@ public class WidgetSettings
     public bool ShowControls { get; set; } = true;
     public int RefreshIntervalMs { get; set; } = 1000;
     public double Opacity { get; set; } = 1.0;
+    public string RefreshToken { get; set; } = string.Empty;
+    public string ClientId { get; set; } = string.Empty;
 }
