@@ -95,7 +95,7 @@ jobs:
 
     - name: Run Tests ARM64
       run: |
-        dotnet test tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj --configuration ${{ env.CONFIGURATION }} --no-build --logger trx --results-directory TestResults
+        dotnet test tests/SpotifyWidget.Tests/bin/ARM64/Release/net10.0-windows10.0.26100.0/SpotifyWidget.Tests.dll --no-build --logger trx --results-directory TestResults
 
     - name: Upload Test Results ARM64
       uses: actions/upload-artifact@v4

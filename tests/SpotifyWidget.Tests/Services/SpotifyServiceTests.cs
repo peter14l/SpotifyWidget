@@ -123,6 +123,7 @@ public class SpotifyServiceTests
         settings.RefreshToken = "test-refresh-token";
         _mockSettings.Setup(s => s.GetSettings()).Returns(settings);
         _mockSettings.Setup(s => s.SaveSettingsAsync(It.IsAny<WidgetSettings>())).Returns(Task.CompletedTask);
+        _service.Initialize();
 
         var result = await _service.GetPlaybackStateAsync();
 
