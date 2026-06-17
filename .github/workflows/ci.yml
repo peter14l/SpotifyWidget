@@ -68,7 +68,7 @@ jobs:
     runs-on: windows-latest
     name: Create Release
     needs: [build]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) || github.event_name == 'workflow_dispatch' && (startsWith(github.ref, 'v') || startsWith(github.ref, 'refs/tags/v'))
+    if: startsWith(github.ref, 'refs/tags/')
 
     permissions:
       contents: write
