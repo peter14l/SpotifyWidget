@@ -1,0 +1,33 @@
+<Project>
+  <PropertyGroup>
+    <AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>
+    <AppxPackage>false</AppxPackage>
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <UseSdkBuildToolsPackage>true</UseSdkBuildToolsPackage>
+    <MSBuildEnableDuplicateTargetConflictDetection>false</MSBuildEnableDuplicateTargetConflictDetection>
+  </PropertyGroup>
+
+  <Target Name="CopyLocalFilesOutputGroup" Returns="@(CopyLocalFilesOutputGroupOutput)">
+    <ItemGroup>
+      <CopyLocalFilesOutputGroupOutput Include="@(ReferenceCopyLocalPaths)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GetMrtPackagingOutputs" Returns="@(PackagingOutputs)">
+    <ItemGroup>
+      <PackagingOutputs Include="@(BuiltProjectOutputGroupOutput)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_GetDefaultResourceLanguage">
+    <PropertyGroup>
+      <DefaultResourceLanguage>$(DefaultLanguage)</DefaultResourceLanguage>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_GetPackageArchitecture">
+    <PropertyGroup>
+      <PackageArchitecture>$(Platform)</PackageArchitecture>
+    </PropertyGroup>
+  </Target>
+</Project>
