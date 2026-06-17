@@ -1,6 +1,6 @@
-using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.ViewManagement;
 
 namespace SpotifyWidget.Services;

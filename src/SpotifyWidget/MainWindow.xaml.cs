@@ -59,6 +59,7 @@ public sealed partial class MainWindow : Window
         }
 
         _appWindow.Changed += OnWindowChanged;
+        _appWindow.Destroying += OnWindowDestroying;
     }
 
     private void OnWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
@@ -133,6 +134,12 @@ public sealed partial class MainWindow : Window
     {
         var settingsWindow = App.Services.GetRequiredService<Controls.SettingsWindow>();
         settingsWindow.Activate();
+    }
+
+    private void OnWindowDestroying(AppWindow sender, object args)
+    {
+        ViewModel.Dispose();
+        ((SpotifyWidget.App)Microsoft.UI.Xaml.Application.Current).DisposeHost();
     }
 
     private void CloseButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)

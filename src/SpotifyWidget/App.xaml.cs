@@ -53,9 +53,8 @@ public partial class App : Application
         _window.Activate();
     }
 
-    protected override void OnExit(object sender, object args)
+    public void DisposeHost()
     {
         _host?.Dispose();
-        base.OnExit(sender, args);
     }
 }
