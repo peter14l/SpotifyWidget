@@ -84,7 +84,7 @@
                 Command="{x:Bind ViewModel.PreviousTrackCommand}" />
             <Button
                 Content="{x:Bind ViewModel.PlayPauseSymbol, Mode=OneWay}"
-                Style="{StaticResource AccentButtonStyle}"
+                Style="{StaticResource SymbolAccentButtonStyle}"
                 Command="{x:Bind ViewModel.PlayPauseCommand}" />
             <Button
                 Content="&#xE893;"
