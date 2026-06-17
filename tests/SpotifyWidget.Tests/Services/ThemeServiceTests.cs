@@ -1,4 +1,5 @@
 using Moq;
+using Xunit;
 using SpotifyWidget.Models;
 using SpotifyWidget.Services;
 

@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using Moq;
 using Moq.Protected;
+using Xunit;
 using SpotifyWidget.Models;
 using SpotifyWidget.Services;
 
