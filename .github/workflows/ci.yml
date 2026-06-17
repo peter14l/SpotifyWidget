@@ -28,14 +28,17 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
     - name: Restore
       run: dotnet restore SpotifyWidget.sln
 
     - name: Build Main Project
-      run: dotnet build src/SpotifyWidget/SpotifyWidget.csproj --configuration ${{ env.CONFIGURATION }} --no-restore
+      run: msbuild src/SpotifyWidget/SpotifyWidget.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }}
 
     - name: Build Test Project
-      run: dotnet build tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj --configuration ${{ env.CONFIGURATION }} --no-restore
+      run: msbuild tests/SpotifyWidget.Tests/SpotifyWidget.Tests.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform=${{ env.PLATFORM }}
 
     - name: Run Tests
       run: |
