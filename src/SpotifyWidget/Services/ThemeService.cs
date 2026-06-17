@@ -21,6 +21,7 @@ public class ThemeService : IThemeService
 
     public ThemeService(ISettingsService settingsService)
     {
+        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "ThemeService ctor\r\n");
         _settingsService = settingsService;
     }
 

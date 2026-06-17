@@ -24,16 +24,22 @@ public sealed partial class MainWindow : Window
 
     public MainWindow(IThemeService themeService, SpotifyPlayerViewModel viewModel, ISettingsService settingsService)
     {
+        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "MainWindow ctor start\r\n");
         this.InitializeComponent();
+        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "InitializeComponent done\r\n");
         ViewModel = viewModel;
         _themeService = themeService;
         _settingsService = settingsService;
         RootGrid.DataContext = viewModel;
 
         InitializeWindow();
+        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "InitializeWindow done\r\n");
         InitializeMicaBackdrop();
+        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "Mica done\r\n");
         ApplyTheme();
+        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "Theme done\r\n");
         RestoreWindowPosition();
+        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "RestorePosition done\r\n");
     }
 
     private void InitializeWindow()
@@ -63,15 +69,17 @@ public sealed partial class MainWindow : Window
         _appWindow.Destroying += OnWindowDestroying;
     }
 
+    private bool _initialPositionSet;
+
     private void OnWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
     {
-        if (args.DidZOrderChange)
-        {
-            sender.MoveInZOrderAtBottom();
-        }
-
         if (args.DidPositionChange)
         {
+            if (!_initialPositionSet)
+            {
+                _initialPositionSet = true;
+                return;
+            }
             _themeService.SaveWindowPosition(new Point(sender.Position.X, sender.Position.Y));
         }
     }
