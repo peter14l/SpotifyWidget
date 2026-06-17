@@ -187,7 +187,7 @@ public class SpotifyServiceTests
         _mockHandler.Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
-                ItExpr.Is<HttpRequestMessage>(r => r.RequestUri?.AbsoluteUri == "https://accounts.spotify.com/api/token"),
+                ItExpr.Is<HttpRequestMessage>(r => r.RequestUri != null && r.RequestUri.AbsoluteUri == "https://accounts.spotify.com/api/token"),
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(new HttpResponseMessage
             {
@@ -203,7 +203,7 @@ public class SpotifyServiceTests
         _mockHandler.Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
-                ItExpr.Is<HttpRequestMessage>(r => r.RequestUri?.AbsoluteUri == "https://api.spotify.com/v1/me/player"),
+                ItExpr.Is<HttpRequestMessage>(r => r.RequestUri != null && r.RequestUri.AbsoluteUri == "https://api.spotify.com/v1/me/player"),
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(new HttpResponseMessage
             {
