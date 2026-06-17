@@ -42,16 +42,12 @@ public partial class SpotifyPlayerViewModel : ObservableObject, IDisposable
 
     public SpotifyPlayerViewModel(ISpotifyService spotifyService, ISettingsService settingsService)
     {
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "VM ctor start\r\n");
         _spotifyService = spotifyService;
         _settingsService = settingsService;
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "VM before DispatcherQueue\r\n");
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", $"VM after DispatcherQueue (null={_dispatcherQueue is null})\r\n");
 
         _spotifyService.PlaybackStateChanged += OnPlaybackStateChanged;
         _spotifyService.AuthenticationStateChanged += OnAuthenticationStateChanged;
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "VM ctor done\r\n");
     }
 
     public async Task InitializeAsync()

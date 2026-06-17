@@ -20,12 +20,10 @@ public class SettingsService : ISettingsService
 
     public SettingsService()
     {
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "SettingsService ctor start\r\n");
         var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         var settingsDir = Path.Combine(appData, "SpotifyWidget");
         Directory.CreateDirectory(settingsDir);
         _settingsPath = Path.Combine(settingsDir, "settings.json");
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "SettingsService ctor done\r\n");
     }
 
     public WidgetSettings GetSettings()

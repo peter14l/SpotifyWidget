@@ -31,7 +31,6 @@ public class SpotifyService : ISpotifyService, IDisposable
 
     public SpotifyService(ISettingsService settingsService, HttpClient? httpClient = null)
     {
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "SpotifyService ctor\r\n");
         _httpClient = httpClient ?? new HttpClient();
         _settingsService = settingsService;
     }

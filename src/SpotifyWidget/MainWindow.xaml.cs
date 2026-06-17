@@ -24,22 +24,16 @@ public sealed partial class MainWindow : Window
 
     public MainWindow(IThemeService themeService, SpotifyPlayerViewModel viewModel, ISettingsService settingsService)
     {
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "MainWindow ctor start\r\n");
         this.InitializeComponent();
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "InitializeComponent done\r\n");
         ViewModel = viewModel;
         _themeService = themeService;
         _settingsService = settingsService;
         RootGrid.DataContext = viewModel;
 
         InitializeWindow();
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "InitializeWindow done\r\n");
         InitializeMicaBackdrop();
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "Mica done\r\n");
         ApplyTheme();
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "Theme done\r\n");
         RestoreWindowPosition();
-        System.IO.File.AppendAllText(@"C:\Users\LOQ\AppData\Local\Temp\app_trace.log", "RestorePosition done\r\n");
     }
 
     private void InitializeWindow()
@@ -49,7 +43,7 @@ public sealed partial class MainWindow : Window
         _appWindow = AppWindow.GetFromWindowId(windowId);
 
         _appWindow.Title = "Spotify Widget";
-        _appWindow.IsShownInSwitchers = false;
+        _appWindow.IsShownInSwitchers = true;
 
         var presenter = _appWindow.Presenter as OverlappedPresenter;
         if (presenter != null)
