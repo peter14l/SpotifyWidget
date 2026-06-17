@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
@@ -27,7 +28,7 @@ public sealed partial class MainWindow : Window
         ViewModel = viewModel;
         _themeService = themeService;
         _settingsService = settingsService;
-        DataContext = viewModel;
+        RootGrid.DataContext = viewModel;
 
         InitializeWindow();
         InitializeMicaBackdrop();
@@ -80,7 +81,8 @@ public sealed partial class MainWindow : Window
         var position = _themeService.LoadWindowPosition();
         if (position.X >= 0 && position.Y >= 0)
         {
-            _appWindow.Move(new PointInt32((int)position.X, (int)position.Y));
+            var hwnd = WindowNative.GetWindowHandle(this);
+            SetWindowPos(hwnd, IntPtr.Zero, (int)position.X, (int)position.Y, 0, 0, 0x0001 | 0x0004);
         }
     }
 
@@ -139,11 +141,14 @@ public sealed partial class MainWindow : Window
     private void OnWindowDestroying(AppWindow sender, object args)
     {
         ViewModel.Dispose();
-        ((SpotifyWidget.App)Microsoft.UI.Xaml.Application.Current).DisposeHost();
+        ((App)Microsoft.UI.Xaml.Application.Current).DisposeHost();
     }
 
     private void CloseButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
         this.Close();
     }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 }
